@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  @font-face { font-family: "Bricolage"; font-weight: 700; src: url(fonts/bricolage-grotesque-latin-700-normal.woff2); }
+  @font-face { font-family: "Bricolage"; font-weight: 800; src: url(fonts/bricolage-grotesque-latin-800-normal.woff2); }
+  @font-face { font-family: "Hanken"; font-weight: 500; src: url(fonts/hanken-grotesk-latin-500-normal.woff2); }
+  @font-face { font-family: "Hanken"; font-weight: 600; src: url(fonts/hanken-grotesk-latin-600-normal.woff2); }
+  @font-face { font-family: "Caveat"; font-weight: 700; src: url(fonts/caveat-latin-700-normal.woff2); }
+
+  :root {
+    --cream: #F3EEE2; --paper: #FBF7EF; --green: #213D2C; --teal: #4B8C85;
+    --yellow: #EEBB44; --ink: #2A2721; --muted: #6E6759; --sand: #E7DCC6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1350px; }
+  .card {
+    width: 1080px; height: 1350px; padding: 88px 92px 84px;
+    display: flex; flex-direction: column; position: relative; overflow: hidden;
+    font-family: "Hanken", sans-serif;
+  }
+  .brand { display: flex; align-items: center; gap: 18px; }
+  .brand .name { font-family: "Bricolage"; font-weight: 800; font-size: 44px; letter-spacing: -0.02em; }
+  .mark { width: 72px; height: 72px; border-radius: 20px; display: flex; align-items: center; justify-content: center; }
+  .body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  h1 {
+    font-family: "Bricolage"; font-weight: 800; letter-spacing: -0.035em; line-height: 1.02;
+    white-space: pre; font-size: 132px;
+  }
+  .sub { font-weight: 600; font-size: 42px; line-height: 1.3; margin-top: 44px; max-width: 860px; }
+  .hand { font-family: "Caveat"; font-weight: 700; font-size: 60px; margin-top: 34px; transform: rotate(-2deg); transform-origin: left; }
+  .foot { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .pill { font-weight: 600; font-size: 34px; padding: 20px 34px; border-radius: 999px; }
+  .meta { font-weight: 600; font-size: 30px; display: flex; align-items: center; gap: 14px; }
+  .dot { width: 18px; height: 18px; border-radius: 50%; background: var(--yellow); box-shadow: 0 0 0 8px rgba(238,187,68,0.25); }
+
+  /* cream */
+  .t-cream { background: var(--cream); color: var(--green); }
+  .t-cream .mark { background: var(--green); }
+  .t-cream .sub { color: var(--muted); }
+  .t-cream .hand { color: var(--teal); }
+  .t-cream .hl { background: linear-gradient(transparent 62%, rgba(238,187,68,0.75) 62%, rgba(238,187,68,0.75) 92%, transparent 92%); }
+  .t-cream .pill { background: var(--green); color: var(--cream); }
+  .t-cream .meta { color: var(--muted); }
+
+  /* green */
+  .t-green { background: var(--green); color: var(--cream); }
+  .t-green .mark { background: var(--cream); }
+  .t-green .sub { color: rgba(243,238,226,0.8); }
+  .t-green .hand { color: var(--yellow); }
+  .t-green .hl { color: var(--yellow); }
+  .t-green .pill { background: var(--yellow); color: var(--green); }
+  .t-green .meta { color: rgba(243,238,226,0.75); }
+
+</style>
+</head>
+<body>
+<div id="card" class="card"></div>
+<script>
+  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const fmt = (s) => esc(s).replace(/\*(.+?)\*/gs, '<span class="hl">$1</span>');
+
+  const logo = (road, dog) => `
+    <svg width="48" height="48" viewBox="0 0 40 40" aria-hidden="true">
+      <path d="M6 29 C13 22 16 25 22 19 C27 14 31 16 35 11" fill="none" stroke="${road}" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="0.5 5.5"/>
+      <ellipse cx="13" cy="30" rx="8.5" ry="4" fill="${dog}"/>
+      <circle cx="19.5" cy="27.6" r="3.2" fill="${dog}"/>
+      <rect x="6.5" y="30.5" width="2.4" height="4.2" rx="1.2" fill="${dog}"/>
+      <rect x="17.5" y="30" width="2.3" height="4.2" rx="1.1" fill="${dog}"/>
+      <path d="M5 30 q-3 -0.5 -4 -3.5" stroke="${dog}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    </svg>`;
+
+
+  window.render = (p) => {
+    const t = p.template;
+    const isGreen = t === "green";
+    const el = document.getElementById("card");
+    el.className = `card t-${t}`;
+    el.innerHTML = `
+      <div class="brand">
+        <span class="mark">${isGreen ? logo("#213D2C", "#213D2C") : logo("#EEBB44", "#F3EEE2")}</span>
+        <span class="name">MilesToGo</span>
+      </div>
+      <div class="body">
+        <h1 id="h">${fmt(p.headline)}</h1>
+        ${p.sub ? `<p class="sub">${esc(p.sub)}</p>` : ""}
+        ${p.hand ? `<p class="hand">${esc(p.hand)}</p>` : ""}
+      </div>
+      <div class="foot">
+        <span class="pill">milestogo.ie</span>
+        <span class="meta"><span class="dot"></span>€97/month · no setup fee</span>
+      </div>`;
+  };
+
+  // Shrink the headline until the body fits and no line overflows the width.
+  window.fit = () => {
+    const h = document.getElementById("h");
+    const body = document.querySelector(".body");
+    let size = 132;
+    const max = 896;
+    const ok = () => h.scrollWidth <= max && body.scrollHeight <= body.clientHeight;
+    h.style.maxWidth = max + "px";
+    while (!ok() && size > 60) { size -= 4; h.style.fontSize = size + "px"; }
+    return size;
+  };
+</script>
+</body>
+</html>

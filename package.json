@@ -1,0 +1,16 @@
+{
+  "name": "milestogo-instagram",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "render": "node scripts/render.mjs",
+    "publish:next": "node scripts/publish.mjs",
+    "publish:dry": "node scripts/publish.mjs --dry"
+  },
+  "devDependencies": {
+    "playwright": "^1.47.0"
+  }
+}

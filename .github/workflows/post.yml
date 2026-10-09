@@ -1,0 +1,50 @@
+name: Post to Instagram
+
+on:
+  schedule:
+    # Hourly through the day (UTC). scripts/publish.mjs decides whether a
+    # 09:00 / 13:00 / 19:00 Irish-time slot is due, so summer/winter time just works.
+    - cron: "7 7-19 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Post the next queued item right now (ignores the schedule)"
+        type: boolean
+        default: false
+      dry_run:
+        description: "Dry run: show what would be posted, post nothing"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: instagram-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Publish next post if a slot is due
+        id: publish
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          FORCE: ${{ inputs.force && 'true' || 'false' }}
+        run: node scripts/publish.mjs ${{ inputs.dry_run && '--dry' || '' }}
+
+      - name: Record it in the queue
+        if: steps.publish.outputs.posted != ''
+        run: |
+          git config user.name "milestogo-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add posts/queue.json
+          git commit -m "posted ${{ steps.publish.outputs.posted }}"
+          git push
