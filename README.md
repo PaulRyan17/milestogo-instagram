@@ -43,9 +43,13 @@ In headlines, wrap words in `*asterisks*` to highlight them. Each `\n` is a line
 font shrinks automatically to fit.
 
 **Add posts.** Append new entries to `posts/queue.json` (next id, `"status": "ready"`,
-`"image": "images/031.jpg"`, `template` either `cream` or `green`), then `npm run render`.
+`"image": "images/031.jpg"`, `template` one of `cream`, `green`, `yellow`), then `npm run render`.
 The workflow warns when fewer than 6 posts are left and fails (emailing you) when the queue is
 empty.
+
+**Goofy posts.** Posts with `"style": "goofy"` (the yellow ones) are mixed into the queue at random
+positions. Posts go out in queue order, so to move one, move its entry in `posts/queue.json`.
+Compare their reach against the plain posts in Instagram insights.
 
 **Test without posting.** `npm run publish:dry`, or run the workflow manually with *Dry run* ticked.
 

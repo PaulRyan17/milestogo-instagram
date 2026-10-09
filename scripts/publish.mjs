@@ -56,6 +56,8 @@ if (force) {
 }
 
 // --- what's next? -----------------------------------------------------------
+// Posts go out in queue order. Goofy posts ("style": "goofy") are mixed in at
+// random positions in the queue, so they hit different times of day.
 const post = queue.find((p) => p.status === "ready");
 if (!post) {
   console.error("::error::The queue is empty. Add more posts to posts/queue.json.");
@@ -64,7 +66,7 @@ if (!post) {
 const imageUrl = `https://raw.githubusercontent.com/${repo}/${ref}/${post.image}`;
 
 console.log(`Slot:  ${slotKey}`);
-console.log(`Post:  ${post.id} (${post.template})`);
+console.log(`Post:  ${post.id} (${post.template}${post.style ? ", " + post.style : ""})`);
 console.log(`Image: ${imageUrl}`);
 console.log(`Caption:\n${post.caption}\n`);
 if (dry) exit("Dry run. Nothing posted.");
